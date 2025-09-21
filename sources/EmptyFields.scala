@@ -44,15 +44,13 @@ end EmptyFields
 
 export EmptyFields.*
 
-class EmptyField(using ComponentInit) extends Field derives Reflector:
+class EmptyField(using ComponentInit) extends Field:
   var usePainter: Boolean = false
   var checkIsMoveAllowed: Boolean = true
 
   @transient @noinspect
   private val lightenPainter: Painter =
     universe.EmptyPainter + "Filters/NiceSoftLighten"
-
-  override def reflect() = autoReflect[EmptyField]
 
   protected def findBelow(map: Map, pos: Position): Position =
     if pos.z >= 0 && map(pos).field.isInstanceOf[EmptyField] then
