@@ -9,40 +9,21 @@ case object JumpFarBelow extends Ability
 
 val TrapDoorKey = "T"
 
-object EmptyFields extends Module:
-  override protected def createComponents()(using Universe): Unit =
-    val emptyField = new EmptyField
-    val parachutes = new Parachutes
-    val parachute = ItemTool.make(
-      parachutes, 
-      "Avec ce parachute, tu n''hésiteras plus à sauter de haut.",
-    )
-    val trapDoorField = new TrapDoorField
-    val trapDoorsPlugin = new TrapDoorsPlugin
-    val trapDoors = new TrapDoors
-    val trapDoorTool = ItemTool.make(
-      trapDoors,
-      s"Tu pourras placer cette trappe sur un trou, ou la reprendre, en appuyant sur $TrapDoorKey.",
-    )
-  end createComponents
-  
-  def emptyField(using Universe): EmptyField =
-    myComponentByID("emptyField")
-  def parachutes(using Universe): Parachutes =
-    myComponentByID("parachutes")
-  def parachute(using Universe): ItemTool =
-    myComponentByID("parachute")
-  def trapDoorField(using Universe): TrapDoorField =
-    myComponentByID("trapDoorField")
-  def trapDoorsPlugin(using Universe): TrapDoorsPlugin =
-    myComponentByID("trapDoorsPlugin")
-  def trapDoors(using Universe): TrapDoors =
-    myComponentByID("trapDoors")
-  def trapDoorTool(using Universe): ItemTool =
-    myComponentByID("trapDoorTool")
-end EmptyFields
+object EmptyFields extends Module
 
-export EmptyFields.*
+@definition def emptyField(using Universe) = new EmptyField
+@definition def parachutes(using Universe) = new Parachutes
+@definition def parachute(using Universe) = ItemTool.make(
+  parachutes, 
+  "Avec ce parachute, tu n''hésiteras plus à sauter de haut.",
+)
+@definition def trapDoorField(using Universe) = new TrapDoorField
+@definition def trapDoorsPlugin(using Universe) = new TrapDoorsPlugin
+@definition def trapDoors(using Universe) = new TrapDoors
+@definition def trapDoorTool(using Universe) = ItemTool.make(
+  trapDoors,
+  s"Tu pourras placer cette trappe sur un trou, ou la reprendre, en appuyant sur $TrapDoorKey.",
+)
 
 class EmptyField(using ComponentInit) extends Field:
   var usePainter: Boolean = false
