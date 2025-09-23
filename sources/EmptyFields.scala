@@ -14,7 +14,7 @@ object EmptyFields extends Module
 @definition def emptyField(using Universe) = new EmptyField
 @definition def parachutes(using Universe) = new Parachutes
 @definition def parachute(using Universe) = ItemTool.make(
-  parachutes, 
+  parachutes,
   "Avec ce parachute, tu n''hésiteras plus à sauter de haut.",
 )
 @definition def trapDoorField(using Universe) = new TrapDoorField
@@ -42,7 +42,7 @@ class EmptyField(using ComponentInit) extends Field:
 
   override protected def doDraw(context: DrawSquareContext): Unit =
     import context.*
-    
+
     if usePainter then
       super.doDraw(context)
       DissipateNeighbors.dissipateGroundNeighbors(context)
@@ -113,7 +113,7 @@ end EmptyField
 
 class Parachutes(using ComponentInit) extends ItemDef:
   icon += "Objects/Parachute"
-  
+
   override def perform(player: CorePlayer) = {
     case JumpFarBelow if player.has(this) => ()
   }
@@ -139,7 +139,7 @@ class TrapDoorsPlugin(using ComponentInit) extends PlayerPlugin:
     else if event.keyString.toUpperCase() == TrapDoorKey && !event.hasAnyControlKey then
       val map = player.position.get.map
       val playerPos = player.position.get.pos
-      
+
       val optDir = Direction.values.find { dir =>
         val targetPos = playerPos +> dir
         if !map.contains(targetPos) then false
