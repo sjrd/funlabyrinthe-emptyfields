@@ -62,7 +62,7 @@ class EmptyField(using ComponentInit) extends Field:
 
         val depth = Math.min(pos.z - below.z, 5)
         for _ <- 0 until depth do
-          lightenPainter.drawTo(context)
+          context.drawTiled(lightenPainter)
       end if
     end if
   end doDraw
