@@ -1,8 +1,8 @@
 package user.sjrd.emptyfields
 
 import com.funlabyrinthe.core.*
-import com.funlabyrinthe.core.graphics.*
 import com.funlabyrinthe.core.input.*
+import com.funlabyrinthe.core.scene.*
 import com.funlabyrinthe.mazes.*
 
 case object JumpFarBelow extends Ability
@@ -40,12 +40,11 @@ class EmptyField(using ComponentInit) extends Field:
       pos
   end findBelow
 
-  override protected def doDraw(context: DrawSquareContext): Unit =
+  override protected def doPresent(context: PresentSquareContext): Batch[SceneNode] = {
     import context.*
 
     if usePainter then
-      super.doDraw(context)
-      DissipateNeighbors.dissipateGroundNeighbors(context)
+      super.doPresent(context) ++ DissipateNeighbors.presentDissipateGroundNeighbors(context)
     else if isSomewhere then
       val map = context.map.get
       val pos = context.pos.get
@@ -53,19 +52,19 @@ class EmptyField(using ComponentInit) extends Field:
       val below = findBelow(map, pos)
 
       if below.z < 0 then
-        gc.fill = Color.Black
-        gc.fillRect(minX, minY, width, height)
-        DissipateNeighbors.dissipateGroundNeighbors(context)
+        val blackBox = Shape.Box(Rectangle(Point.zero, cellSize), Fill.Color(RGBA.Black), Stroke.None, cellSize.centerPoint)
+        Batch(blackBox) ++ DissipateNeighbors.presentDissipateGroundNeighbors(context)
       else
         val belowContext = context.withWhere(Some(map.ref(below)))
-        map(below).drawTo(belowContext)
-
+        val base = map(below).present(belowContext)
         val depth = Math.min(pos.z - below.z, 5)
-        for _ <- 0 until depth do
-          context.drawTiled(lightenPainter)
+        val lightenOnce = context.presentTiled(lightenPainter)
+        (0 until depth).foldLeft(base)((prev, _) => prev ++ lightenOnce)
       end if
+    else
+      Batch.empty
     end if
-  end doDraw
+  }
 
   override def entering(context: MoveContext): Unit = {
     import context.*
