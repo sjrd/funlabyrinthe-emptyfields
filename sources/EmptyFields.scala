@@ -66,7 +66,7 @@ class EmptyField(using ComponentInit) extends Field:
     end if
   }
 
-  override def entering(context: MoveContext): Unit = {
+  override def entering(context: EnteringContext): Unit = {
     import context.*
 
     val map = context.pos.map
@@ -88,8 +88,7 @@ class EmptyField(using ComponentInit) extends Field:
           + s"Il y a $depth étages, là !"
       )
     else if checkIsMoveAllowed then
-      val belowContext = MoveContext(player, Some(map.ref(below)), keyEvent)
-      if !player.testMoveAllowed(belowContext) then
+      if !player.testMoveAllowed(map.ref(below), previousDirection, keyEvent) then
         cancel()
       else
         () // ok
@@ -97,16 +96,13 @@ class EmptyField(using ComponentInit) extends Field:
       () // ok
   }
 
-  override def entered(context: MoveContext): Unit = {
+  override def entered(context: EnteredContext): Unit = {
     import context.*
 
-    val map = context.pos.map
-    val pos = context.pos.pos
-
-    if src.exists(_().field.isInstanceOf[EmptyField]) then
+    if optSrc.exists(_().field.isInstanceOf[EmptyField]) then
       temporize()
 
-    player.moveTo(map.ref(pos - (0, 0, 1)), execute = true)
+    player.moveTo(map.ref(pos.pos - (0, 0, 1)), execute = true)
   }
 end EmptyField
 
