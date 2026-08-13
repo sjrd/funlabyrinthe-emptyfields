@@ -77,15 +77,15 @@ class EmptyField(using ComponentInit) extends Field:
 
     if below.z < 0 then
       cancel()
-      player.showMessage(
-        "Tu ne voudrais quand même pas sauter là-dedans !? "
-          + "On n''en voit même pas le fond !"
+      player.showMessageOnce(
+        "On ne voit pas le fond de ce trou. "
+          + "Mieux vaut ne pas tomber dedans."
       )
     else if depth > 1 && player.cannot(JumpFarBelow) then
       cancel()
       player.showMessage(
-        "Tu ne voudrais quand même pas sauter si bas !? "
-          + s"Il y a $depth étages, là !"
+        s"Ce trou fait $depth étages de profondeur. "
+          + "C'est trop haut pour sauter."
       )
     else if checkIsMoveAllowed then
       if !player.testMoveAllowed(map.ref(below), previousDirection, keyEvent) then
